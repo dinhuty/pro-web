@@ -9,8 +9,9 @@
             </div>
             <div class="product-main">
                 <div class="product-swiper">
-                    <swiper :spaceBetween="10" :navigation="true" :thumbs="computedThumbs" :modules="modules"
-                        class="swiper-view">
+                    <swiper :spaceBetween="10" 
+                    :pagination="true" 
+                    :navigation="true" :thumbs="computedThumbs" :modules="modules" class="swiper-view">
 
                         <swiper-slide class="swiper-img">
                             <img :src="ip14demo" />
@@ -198,7 +199,7 @@ import Card from '@/view/components/Card.vue'
 import SectionHeading from '@/view/components/SectionHeading.vue'
 import { ref, computed } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
+import { FreeMode, Navigation, Thumbs, Pagination } from 'swiper/modules';
 import ip15demo from '@/assets/images/ip15.jpg'
 import ip14demo from '@/assets/images/ip14.jpg'
 import ip13demo from '@/assets/images/ip13.jpg'
@@ -227,7 +228,7 @@ const breakpoints = {
     1024: { slidesPerView: 4, spaceBetween: 18 },
     1224: { slidesPerView: 5, spaceBetween: 20 },
 }
-const modules = [FreeMode, Navigation, Thumbs]
+const modules = [FreeMode, Navigation, Thumbs, Pagination]
 </script>
 
 <style lang="scss" >
@@ -719,4 +720,5 @@ const modules = [FreeMode, Navigation, Thumbs]
             }
         }
     }
-}</style>
+}
+</style>

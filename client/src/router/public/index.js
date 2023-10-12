@@ -14,6 +14,10 @@ const publicRoutes = [
     {
         path: '/product/detail/:id',
         component: () => import('@/view/pages/ProductDetail/ProductDetail')
+    },
+    {
+        path: '/cart',
+        component: () => import('@/view/pages/Cart')
     }
 ]
 

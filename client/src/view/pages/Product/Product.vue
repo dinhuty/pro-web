@@ -1,56 +1,63 @@
 <template>
-    <Container class="app-product">
-        <div class="product-slider">
-            <swiper :pagination="true" :modules="modules" class="mySwiper">
-                <swiper-slide v-for="n in 3" :key="n">
-                    <div class="slider-img">
-                        <img :src="require('@/assets/images/laptop-banner.jpg')" alt="">
-                    </div>
-                </swiper-slide>
+    <Container>
+        <div class="app-product">
+            <div class="product-slider">
+                <swiper :pagination="true" :modules="modules" class="mySwiper">
+                    <swiper-slide v-for="n in 3" :key="n">
+                        <div class="slider-img">
+                            <img :src="require('@/assets/images/laptop-banner.jpg')" alt="">
+                        </div>
+                    </swiper-slide>
 
-            </swiper>
-        </div>
-        <div class="product-category">
-            <div class="category-item active" v-for="category in categories" :key="category.id">
-                <div class="icon">
-                    <img :src="category.icon" alt="">
-                </div>
-                <span class="title">
-                    {{ category.name }}
-                </span>
+                </swiper>
             </div>
-        </div>
-        <div class="product-main">
-            <div class="product-filter">
-                <div class="filter-heading">
-                    <div class="title">
-                        Lọc
+            <div class="product-category">
+                <div class="category-item active" v-for="category in categories" :key="category.id">
+                    <div class="icon">
+                        <img :src="category.icon" alt="">
                     </div>
-                    <div class="btn">
-                        Xóa hết
-                    </div>
-                </div>
-                <div class="filter-options">
-                    <Filter title="Thương hiệu" />
-                    <div class="option-drive"></div>
-                    <Filter title="Màu sắc" />
-                    <div class="option-drive"></div>
-                    <Filter title="Giá tiền" />
-
+                    <span class="title">
+                        {{ category.name }}
+                    </span>
                 </div>
             </div>
-            <div class="product-list">
-                <div class="box-sort">
-                    <select>
-                        <option disabled selected value="default">Sắp xếp</option>
-                        <option value="new">Mới nhất</option>
-                        <option value="0">Giá thấp nhất</option>
-                        <option value="1">Giá cao nhất</option>
-                    </select>
+            <div class="product-main">
+                <div class="product-filter">
+                    <div class="filter-heading">
+                        <div class="title">
+                            Lọc
+                        </div>
+                        <div class="btn">
+                            Xóa hết
+                        </div>
+                    </div>
+                    <div class="filter-options">
+                        <Filter title="Thương hiệu" />
+                        <div class="option-drive"></div>
+                        <Filter title="Màu sắc" />
+                        <div class="option-drive"></div>
+                        <Filter title="Giá tiền" />
+
+                    </div>
                 </div>
-                <div class="product-grid">
-                    <Card v-for="(card, index) in 12" :key="index" />
+                <div class="product-list">
+                    <div class="box-sort">
+                        <select>
+                            <option disabled selected value="default">Sắp xếp</option>
+                            <option value="new">Mới nhất</option>
+                            <option value="0">Giá thấp nhất</option>
+                            <option value="1">Giá cao nhất</option>
+                        </select>
+                    </div>
+                    <div class="product-grid">
+                        <Card v-for="(card, index) in 12" :key="index" />
+                    </div>
                 </div>
+            </div>
+            <div class="product-paginate">
+                <paginate :page-count="20" :page-range="2" :margin-pages="2" :click-handler="clickCallback"
+                    :prev-text="'Trước'" :next-text="'Sau'" :container-class="'pagination'" :page-class="'page-item'">
+                </paginate>
             </div>
         </div>
     </Container>
@@ -64,6 +71,7 @@ import tabletIcon from '@/assets/svg/categories/tablet.svg'
 import watchIcon from '@/assets/svg/categories/watch.svg'
 import Card from '@/view/components/Card.vue';
 import Filter from './_Filters.vue';
+import Paginate from "vuejs-paginate-next";
 
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination } from 'swiper/modules';
@@ -98,6 +106,9 @@ const categories = [
         icon: watchIcon
     }
 ]
+const clickCallback = (pageNum) => {
+    console.log(pageNum)
+}
 </script>
 
 <style scoped lang="scss">
@@ -109,6 +120,7 @@ const categories = [
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 40px;
+
     .product-slider {
         width: 100%;
 
@@ -252,8 +264,51 @@ const categories = [
         }
 
     }
-    .product-similar{
-        
+
+    .product-similar {}
+
+    .product-paginate {
+        align-self: flex-end;
+        padding: 24px 20px 60px 20px;
+
+        :deep(.pagination) {
+            display: flex;
+            gap: 5px;
+
+            .page-item {
+                a {
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    border: 1px solid $blue;
+                    font-weight: 500;
+                    cursor: pointer;
+                    user-select: none;
+                }
+
+                &.active,
+                &:hover {
+                    a {
+                        color: $white;
+                        background-color: $blue;
+                    }
+                }
+
+                &.disabled {
+                    &:hover {
+                        a{
+                            background-color: $white;
+                            color: $black;
+                        }
+                    }
+
+                    a {
+                        opacity: .5;
+                    }
+                }
+            }
+        }
     }
+
+
 }
 </style>

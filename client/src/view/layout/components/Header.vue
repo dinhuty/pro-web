@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="header-right">
-                <div class="header-right-box" v-for="item in menuItems" :key="item.value">
+                <router-link to="/cart" class="header-right-box" v-for="item in menuItems" :key="item.value">
                     <div class="box-icon">
                         <font-awesome-icon :icon="item.icon" />
                     </div>
@@ -24,17 +24,17 @@
                             {{ item.lText }}
                         </span>
                     </div>
-                </div>
+                </router-link>
             </div>
         </Container>
         <div class="sub-header">
             <Container class="sub-main">
-                <div class="menu-item" v-for="sub in subs" :key="sub.id">
+                <router-link to="/product" class="menu-item" v-for="sub in subs" :key="sub.id">
                     <div class="icon">
                         <font-awesome-icon :icon="sub.icon" />
                     </div>
                     <span>{{ sub.name }}</span>
-                </div>
+                </router-link>
             </Container>
         </div>
     </div>
