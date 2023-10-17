@@ -1,16 +1,11 @@
 <template>
     <section class="new-product">
-        <section-heading 
-            titleText="Sản phẩm mới" 
-            navText="View all" 
-            navTo="/product" 
-            :icon="new_icon"
-            />
-        <div class="product-list">
+        <section-heading titleText="Sản phẩm mới" navText="View all" navTo="/san-pham/dien-thoai" :icon="new_icon" />
+        <div class="product-list" v-if="products">
             <swiper :modules="modules" :slides-per-view="3" :navigation="true" :space-between="24" id="swiper-slider"
                 :breakpoints="breakpoints">
-                <swiper-slide class="swiper-item" v-for="n in 12" :key="n">
-                    <Card />
+                <swiper-slide class="swiper-item" v-for="product in products" :key="product._id">
+                    <Card :product="product" />
                 </swiper-slide>
             </swiper>
         </div>
@@ -24,6 +19,20 @@ import new_icon from "@/assets/json/new.json"
 import SectionHeading from '@/view/components/SectionHeading.vue';
 import Card from '@/view/components/Card.vue';
 import { Navigation } from 'swiper/modules';
+import { ref, onMounted } from 'vue'
+import { ProductsAxiosService } from '@/services/remote/product';
+
+const products = ref(null)
+onMounted(async () => {
+    await ProductsAxiosService.fetchAll({ page: 1, page_size: 12 })
+        .then(res => {
+            products.value = res.data.products
+            console.log(res.data)
+        })
+        .catch(error => {
+            console.log("lỗi")
+        });
+});
 const breakpoints = {
     320: { slidesPerView: 2, spaceBetween: 10 },
     768: { slidesPerView: 2, spaceBetween: 16 },
@@ -74,4 +83,5 @@ const modules = [Navigation]
         }
     }
 
-}</style>
+}
+</style>

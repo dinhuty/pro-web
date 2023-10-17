@@ -1,45 +1,31 @@
 <template>
     <Container>
-        <div class="product-detail">
+        <div class="product-detail" v-if="product">
             <div class="app-navigate">
-                Sản phẩm > Máy tính
+                Sản phẩm > {{ product.name }}
             </div>
             <div class="product-name">
-                <p>MacBook Pro M2 MNEJ3 2022 LLA 13.3 inch</p>
+                <p>
+                    {{ product.name }}
+                </p>
             </div>
             <div class="product-main">
                 <div class="product-swiper">
-                    <swiper :spaceBetween="10" 
-                    :pagination="true" 
-                    :navigation="true" :thumbs="computedThumbs" :modules="modules" class="swiper-view">
+                    <swiper :spaceBetween="10" :pagination="true" :navigation="true" :thumbs="computedThumbs"
+                        :modules="modules" class="swiper-view">
 
-                        <swiper-slide class="swiper-img">
-                            <img :src="ip14demo" />
-                        </swiper-slide>
-                        <swiper-slide class="swiper-img">
-                            <img :src="ip13demo" />
-                        </swiper-slide>
-                        <swiper-slide class="swiper-img">
-                            <img :src="ip15demo" />
+                        <swiper-slide class="swiper-img" v-for="image in product.images" :key="image.url">
+                            <img :src="image.url" />
                         </swiper-slide>
                     </swiper>
                     <swiper @swiper="setThumbsSwiper" :navigation="true" :spaceBetween="10" :slidesPerView="8"
                         :freeMode="true" :watchSlidesProgress="true" :modules="modules" class="swiper-slider">
-
-                        <swiper-slide class="swiper-img">
-                            <img :src="ip14demo" />
+                        <swiper-slide class="swiper-img" v-for="image in product.images" :key="image.url">
+                            <img :src="image.url" />
                         </swiper-slide>
-                        <swiper-slide class="swiper-img">
-                            <img :src="ip13demo" />
-                        </swiper-slide>
-                        <swiper-slide class="swiper-img">
-                            <img :src="ip15demo" />
-                        </swiper-slide>
-
                     </swiper>
                 </div>
                 <div class="product-info">
-
                     <div class="product-rating">
                         <div class="rating">
                             <span class="title">
@@ -50,32 +36,37 @@
                             </span>
                             <font-awesome-icon icon="star" />
                         </div>
-                        <div class="sold">
+                        <div class="sold" @click="showx">
                             Sold 125
                         </div>
                     </div>
-                    <div class="product-options">
+                    <div class="product-price" v-if="selectProduct">
+                        <span>{{ formatCurrency(selectProduct.option.attribute.price) }}</span>
+                    </div>
+                    <div class="product-options" v-if="selectProduct">
                         <div class="option-specs">
                             <div class="title">
                                 Bộ nhớ:
                             </div>
-                            <div class="spec active">
-                                8G/128G
+                            <div :class="[selectProduct.option.attribute._id === att._id ? 'active' : '', 'spec']"
+                                @click="selectProductOption({ att })" v-for="att in  product.options.attribute "
+                                :key="att._id">
+                                {{ att.value }}
                             </div>
-                            <div class="spec">
-                                8G/256G
-                            </div>
-                            <div class="spec">
-                                12G/512G
-                            </div>
-
+                            <!-- <div>
+                                {{ selectProduct.option.attribute.quantity }}
+                            </div> -->
                         </div>
                         <div class="option-colors">
                             <h3 class="title">
                                 Màu sắc:
                             </h3>
-                            <div :class="[n === 1 ? 'color' : 'color', n === 1 ? 'active' : '']" v-for="n in 3" :key="n">
-                            </div>
+                            <span :style="{ 'background-color': color.value }"
+                                :class="[selectProduct.option.color.value === color.value ? 'active' : '', 'color']"
+                                @click="selectProductOption({ color })" v-for="color  in  product.options.colors"
+                                :key="color.value">
+                            </span>
+
                         </div>
                     </div>
                     <div class="product-benefit">
@@ -127,29 +118,23 @@
                 </div>
                 <div class="desc">
                     <ul class="technical">
-                        <li v-for="n in 8" :key="n">
-                            <span>Màn hình</span>
-                            <div>OLED6.1"Super Retina XDR OLED6.1</div>
+                        <li v-for="spec  in  product.specs" :key="spec._id">
+                            <h5>{{ spec.key }}:</h5>
+                            <div>{{ spec.value }}</div>
                         </li>
                     </ul>
                     <div class="introduce">
                         <span>Giới thiệu</span>
-                        <p>iPad Air 5 M1 Wifi 64 GB đã được công bố tại sự kiện Peek Performance diễn ra hôm 9/3 (theo giờ
-                            Việt Nam). Năm nay Apple đã có những thay đổi lớn về cả hiệu năng và bổ sung màu sắc mới cho
-                            thiết bị.</p>
-                        <p>iPad Air 5 M1 Wifi 64 GB có thiết kế phẳng ở 4 cạnh, mặt sau được làm từ nhôm với nhiều màu sắc
-                            tươi trẻ. Đặc biệt, năm nay Apple đã bổ sung màu tím cho dòng iPad Air 5 M1 Wifi 64 GB, màu sắc
-                            này sẽ gây ấn tượng mạnh khi chúng ta cầm máy sử dụng. Màn hình của máy cũng được làm phẳng với
-                            kích thước 10.9 inch.</p>
+                        <p>{{ product.description }}</p>
                     </div>
                 </div>
             </div>
-            <div class="product-similar">
-                <section-heading titleText="Sản phẩm tương tự" navText="View all" navTo="/product" />
+            <div class="product-similar" v-if="products">
+                <section-heading titleText="Sản phẩm tương tự" navText="View all" navTo="/san-pham/dien-thoai" />
                 <swiper :modules="modules" :slides-per-view="4.5" :navigation="true" :space-between="24" id="swiper-slider"
                     :breakpoints="breakpoints">
-                    <swiper-slide class="swiper-item" v-for="n in 12" :key="n">
-                        <Card />
+                    <swiper-slide class="swiper-item" v-for="product  in  products" :key="product._id">
+                        <Card :product="product" />
                     </swiper-slide>
                 </swiper>
             </div>
@@ -162,7 +147,7 @@
                     <input type="submit" class="form-btn" value="Bình luận">
                 </form>
                 <div class="comment-list">
-                    <div class="comment-item" v-for="n in 5" :key="n">
+                    <div class="comment-item" v-for=" n  in  5" :key="n">
                         <div class="name">
                             Đặng Ngọc Hoàng
                         </div>
@@ -197,19 +182,18 @@
 import Container from "@/view/common/Container.vue";
 import Card from '@/view/components/Card.vue'
 import SectionHeading from '@/view/components/SectionHeading.vue'
-import { ref, computed } from 'vue';
+import { ref, computed, reactive, onMounted, watchEffect, onBeforeMount } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { FreeMode, Navigation, Thumbs, Pagination } from 'swiper/modules';
-import ip15demo from '@/assets/images/ip15.jpg'
-import ip14demo from '@/assets/images/ip14.jpg'
-import ip13demo from '@/assets/images/ip13.jpg'
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
+import { formatCurrency } from "@/utils/formatCurrency";
 import { LottieAnimation } from "lottie-web-vue"
 import couponIcon from '@/assets/json/coupon.json'
-
+import { useRoute } from "vue-router";
+import { ProductsAxiosService } from "@/services/remote/product";
 const thumbsSwiper = ref(null);
 let anim = ref()
 const setThumbsSwiper = (swiper) => {
@@ -228,6 +212,51 @@ const breakpoints = {
     1024: { slidesPerView: 4, spaceBetween: 18 },
     1224: { slidesPerView: 5, spaceBetween: 20 },
 }
+const product = ref(null);
+const selectProduct = reactive({
+    product: {},
+    option: {},
+})
+const products = ref(null)
+const route = useRoute()
+onMounted(() => {
+    ProductsAxiosService.getProductBySlug(route.params.slug)
+        .then(res => {
+            product.value = res.data.product
+            selectProduct.product = {
+                id: res.data.product._id,
+                name: res.data.product.name,
+                thumb_url: res.data.product.thumb_url
+            }
+            selectProduct.option = {
+                color: res.data.product.options.colors[0],
+                attribute: res.data.product.options.attribute[0],
+            }
+        }).catch(err => {
+            console.log("no response")
+        })
+    ProductsAxiosService.fetchAll()
+        .then(res => {
+            products.value = res.data.products
+            console.log(res.data.products)
+        })
+})
+const selectProductOption = (option) => {
+    if (option.att) {
+        selectProduct.option.attribute = option.att
+    }
+    if (option.color) {
+        selectProduct.option.color = option.color
+    }
+};
+const showx = () => {
+    console.log(selectProduct)
+}
+
+watchEffect(() => {
+    console.log(selectProduct)
+})
+
 const modules = [FreeMode, Navigation, Thumbs, Pagination]
 </script>
 
@@ -390,6 +419,15 @@ const modules = [FreeMode, Navigation, Thumbs, Pagination]
             }
         }
 
+        .product-price {
+            padding: 15px;
+            color: red;
+            font-size: 28px;
+            font-weight: 700;
+            background-color: rgba($yellow, .4);
+            border-radius: 8px;
+        }
+
         .product-options {
             display: flex;
             flex-direction: column;
@@ -430,15 +468,23 @@ const modules = [FreeMode, Navigation, Thumbs, Pagination]
                 }
 
                 .color {
-                    height: 35px;
-                    width: 35px;
+                    height: 36px;
+                    width: 36px;
                     border-radius: 50%;
                     background-color: $azure;
+                    position: relative;
                     cursor: pointer;
 
-                    &:hover,
-                    &.active {
-                        border: 2px solid $green;
+                    &.active::after {
+                        content: "";
+                        width: 46px;
+                        height: 46px;
+                        border: 2px solid #000;
+                        position: absolute;
+                        box-sizing: border-box;
+                        border-radius: 50%;
+                        left: -5px;
+                        top: -5px;
                     }
                 }
 
@@ -528,12 +574,12 @@ const modules = [FreeMode, Navigation, Thumbs, Pagination]
             flex-direction: column;
             gap: 32px;
 
-            @include min-sm {
+            @include min-lg {
                 flex-direction: row;
             }
 
             .technical {
-                @include min-sm {
+                @include min-lg {
                     width: 50%;
                 }
 
@@ -549,19 +595,21 @@ const modules = [FreeMode, Navigation, Thumbs, Pagination]
                         flex-direction: row;
                         gap: 0;
 
-                        span {
+                        h5 {
                             overflow: hidden;
+                            display: inline-block;
                             width: 140px;
-                            white-space: nowrap;
+                            white-space: normal;
                             text-overflow: ellipsis;
                             overflow: hidden;
                             font-weight: 600;
-
                         }
 
                         div {
+                            width: calc(100% - 140px);
                             overflow: hidden;
                             text-overflow: ellipsis;
+                            font-weight: 400;
                             line-height: 20px;
                         }
                     }
@@ -589,7 +637,7 @@ const modules = [FreeMode, Navigation, Thumbs, Pagination]
                     line-height: 150%;
                 }
 
-                @include min-sm {
+                @include min-lg {
                     width: 50%;
                 }
             }

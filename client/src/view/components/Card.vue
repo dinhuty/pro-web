@@ -1,7 +1,7 @@
 <template>
-    <div class="card">
+    <router-link :to="`/san-pham/${product.slug}`" class="card">
         <div class="card__img">
-            <img :src="require('@/assets/images/prd2.png')" alt="">
+            <img :src="product.thumb_url.url" alt="">
         </div>
         <div class="card__line">
             <img :src="require('@/assets/svg/line-prd.svg')" alt="">
@@ -9,15 +9,19 @@
         <div class="card__desc">
             <div class="card__title">
                 <p>
-                    Apple MacBook Air 15" w/ Touch ID (2023) - Space Grey (Apple M2 Chip / 256GB SSD / 8GB
-                    RAM)
+                    {{ product.name }}
                 </p>
             </div>
-
+            <div class="card__option">
+                <div class="option-item" v-for="option in product.options.attribute" :key="option._id">
+                    {{ option.value }}
+                </div>
+            </div>
             <div class="card__info">
                 <div class="card__price">
-                    $38.00
+                    {{ formatCurrency(product.basePrice) }}
                 </div>
+
                 <div class="card__rating">
                     <span class="box-text">
                         4.9
@@ -31,30 +35,40 @@
         <span class="card__discount">
             -30%
         </span>
-    </div>
+    </router-link>
 </template>
 <script setup>
+import { formatCurrency } from '@/utils/formatCurrency'
 defineProps({
-
+    product: Object,
+    category: String
 })
 </script>
 <style lang="scss" scoped>
 .card {
     position: relative;
     display: flex;
-    padding: 24px 16px 42px 16px;
+    padding: 10px 5px 30px 5px;
     flex-direction: column;
     gap: 16px;
-    border-radius: 8px;
-    background: var(--White, #FFF);
-    box-shadow: $box-shadow-prd;
+    background: $white;
+    // box-shadow: $box-shadow-prd;
+    border-right: 1px solid $border-prd;
+    border-bottom: 1px solid $border-prd;
+
+    @include min-sm {
+        border-radius: 8px;
+        border: 1px solid $border-prd;
+        padding: 50px 16px 20px 16px;
+    }
 
     &__img {
         width: 100%;
-        overflow: hidden;
 
         img {
+            height: 100%;
             width: 100%;
+            object-fit: contain;
             cursor: pointer;
             transition: all .3s cubic-bezier(0.075, 0.82, 0.165, 1);
 
@@ -78,11 +92,11 @@ defineProps({
             -webkit-box-orient: vertical;
             display: -webkit-box;
             font-size: 14px;
-            font-weight: 600;
-            line-height: 24px;
+            font-weight: 500;
+            line-height: 21px;
 
             &:hover {
-                color: $azure;
+                color: $blue;
             }
         }
     }
@@ -105,9 +119,15 @@ defineProps({
     &__info {
         display: flex;
         justify-content: space-between;
+        gap: 16px;
+        flex-direction: column;
+
+        @include min-sm {
+            flex-direction: row;
+        }
 
         .card__price {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
             color: $red;
 
@@ -123,6 +143,22 @@ defineProps({
                 color: $yellow;
             }
         }
+
+
+    }
+
+    .card__option {
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 11px;
+        gap: 10px;
+
+        .option-item {
+            padding: 5px;
+            border-radius: 2px;
+            border: 1px solid $border-prd;
+            background-color:$gray-light;
+        }
     }
 
     &__discount {
@@ -133,10 +169,10 @@ defineProps({
         gap: 10px;
         left: 0;
         top: 20px;
-        font-size: 15px;
+        font-size: 13px;
         border-radius: 0px 8px 8px 0px;
-        background: var(--primary-secondary-secondary-100, #FDDBC9);
-        color: var(--primary-secondary-secondary-400, #F45E0C);
+        background: var(--primary-secondary-secondary-100, #fdc9c94e);
+        color: $red;
     }
 }
 </style>

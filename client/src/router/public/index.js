@@ -8,11 +8,37 @@ const publicRoutes = [
         component: () => import('@/view/pages/About/About')
     },
     {
-        path: '/product',
-        component: () => import('@/view/pages/Product/Product')
+        path: '/san-pham',
+        component: () => import('@/view/pages/Product/Product'),
+        children: [
+            {
+                path: '',
+                component: () => import('@/view/pages/Product/MobileProduct/MobileProduct.vue'),
+            },
+            {
+                path: 'dien-thoai',
+                component: () => import('@/view/pages/Product/MobileProduct/MobileProduct.vue'),
+            },
+            {
+                path: 'may-tinh-xach-tay',
+                component: () => import('@/view/pages/Product/LaptopProduct/LaptopProduct.vue'),
+            },
+            {
+                path: 'phu-kien',
+                component: () => import('@/view/pages/Product/AccessoryProduct/AccessoryProduct'),
+            },
+            {
+                path: 'may-tinh-bang',
+                component: () => import('@/view/pages/Product/TabletProduct/TabletProduct.vue'),
+            },
+            {
+                path: 'dong-ho',
+                component: () => import('@/view/pages/Product/WatchProduct/WatchProduct.vue'),
+            }
+        ]
     },
     {
-        path: '/product/detail/:id',
+        path: '/san-pham/:slug',
         component: () => import('@/view/pages/ProductDetail/ProductDetail')
     },
     {

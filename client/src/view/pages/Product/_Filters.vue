@@ -4,10 +4,10 @@
             {{ title }}
         </span>
         <div class="options">
-            <div class="option" v-for="n in 5" :key="n">
-                <input type="checkbox" id="apple" name="apple" value="HTML">
-                <label for="apple">Apple</label>
-
+            <div class="option" v-for="option in options" :key="option.value">
+                <input type="radio" @input="$emit('update:selected', option.value)" :id="option.value"
+                    :name="option.type" :value="option.value">
+                <label :for="option.value">{{ option.displayName }}</label>
             </div>
         </div>
     </div>
@@ -17,6 +17,7 @@ defineProps({
     title: String,
     options: Array
 })
+const emit = defineEmits(['update:selected']);
 </script>
 
 <style lang="scss" scoped>

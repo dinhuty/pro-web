@@ -1,18 +1,24 @@
 const mongoose = require('mongoose')
-
+const slugify = require('slugify')
 const productSchema = mongoose.Schema({
     name: {
         type: String,
         require: true,
         trim: true,
     },
+    slug: {
+        type: String,
+    },
     brand: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Brand'
     },
+    thumb_url: {
+        type: Object
+    },
     images: [
         {
-            type: String,
+            type: Object,
         }
     ],
     basePrice: {
@@ -49,5 +55,18 @@ const productSchema = mongoose.Schema({
     { timestamps: true }
 )
 
+productSchema.pre('save', function (next) {
+    if (!this.slug) {
+        this.slug = slugify(this.name, {
+            replacement: '-',
+            remove: undefined,
+            lower: true,
+            strict: false,
+            locale: 'vi',
+            trim: true
+        })
+    }
+    next();
+});
 
 module.exports = mongoose.model('Product', productSchema)

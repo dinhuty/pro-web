@@ -1,11 +1,11 @@
 <template>
     <div class="app-header">
         <Container class="header-container">
-            <div class="header-left">
+            <router-link to="/" class="header-left">
                 <span>
                     Electronic
                 </span>
-            </div>
+            </router-link>
             <div class="header-center">
                 <div class="header-search">
                     <input type="text" placeholder="Bạn cần tìm gì?">
@@ -29,7 +29,7 @@
         </Container>
         <div class="sub-header">
             <Container class="sub-main">
-                <router-link to="/product" class="menu-item" v-for="sub in subs" :key="sub.id">
+                <router-link :to="`${sub.path}`" class="menu-item" v-for="sub in subs" :key="sub.id">
                     <div class="icon">
                         <font-awesome-icon :icon="sub.icon" />
                     </div>
@@ -48,38 +48,33 @@ const subs = ref([
     {
         id: 1,
         name: "Điện thoại",
-        icon: "mobile"
+        icon: "mobile",
+        path: '/san-pham/dien-thoai'
     },
     {
         id: 2,
         name: "Máy tính",
-        icon: "laptop"
+        icon: "laptop",
+        path: '/san-pham/may-tinh-xach-tay'
     },
     {
         id: 3,
+        name: "Đồng hồ",
+        icon: "calendar",
+        path: '/san-pham/dong-ho'
+    },
+    {
+        id: 4,
         name: "Phụ kiện",
-        icon: "laptop"
-    },
-    {
-        id: 4,
-        name: "Đồng hồ",
-        icon: "laptop"
+        icon: "mobile",
+        path: '/san-pham/phu-kien'
     },
     {
         id: 5,
-        name: "Linh kiện",
-        icon: "laptop"
-    },
-    {
-        id: 4,
-        name: "Đồng hồ",
-        icon: "calendar"
-    },
-    {
-        id: 5,
-        name: "Linh kiện",
-        icon: "laptop"
-    },
+        name: "Máy tính bảng",
+        icon: "laptop",
+        path: '/san-pham/may-tinh-bang'
+    }
 ])
 const menuItems = ref([
     {
@@ -153,6 +148,7 @@ onMounted(() => {
         align-items: center;
         font-family: 'Odibee Sans', cursive;
         font-size: 35px;
+        cursor: pointer;
     }
 
     .header-center {
@@ -220,7 +216,8 @@ onMounted(() => {
 
         .sub-main {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 70px;
             align-items: center;
             padding: 0 20px;
             color: $white;
@@ -232,6 +229,7 @@ onMounted(() => {
             display: flex;
             gap: 10px;
             align-items: center;
+
             .icon {
                 font-size: 14px;
             }

@@ -1,22 +1,9 @@
 import { createStore } from 'vuex'
-
+import product from './modules/product'
 
 const store = createStore({
-    state() {
-        return {
-            count: 0,
-            products: null
-        }
-    },
-    mutations: {
-        increment(state) {
-            state.count++
-        }
-    },
-    actions: {
-        getData({ commit }, { id }) {
-            console.log(ctx)
-        }
+    modules: {
+        product
     }
 })
 

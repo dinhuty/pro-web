@@ -12,50 +12,19 @@
                 </swiper>
             </div>
             <div class="product-category">
-                <div class="category-item active" v-for="category in categories" :key="category.id">
+                <router-link :class="[route.path.includes(category.path) ? 'active' : '', 'category-item']"
+                    :to="`/san-pham/${category.path}`" v-for="category in  categories " :key="category.id">
                     <div class="icon">
                         <img :src="category.icon" alt="">
                     </div>
                     <span class="title">
                         {{ category.name }}
                     </span>
-                </div>
+                </router-link>
             </div>
-            <div class="product-main">
-                <div class="product-filter">
-                    <div class="filter-heading">
-                        <div class="title">
-                            Lọc
-                        </div>
-                        <div class="btn">
-                            Xóa hết
-                        </div>
-                    </div>
-                    <div class="filter-options">
-                        <Filter title="Thương hiệu" />
-                        <div class="option-drive"></div>
-                        <Filter title="Màu sắc" />
-                        <div class="option-drive"></div>
-                        <Filter title="Giá tiền" />
-
-                    </div>
-                </div>
-                <div class="product-list">
-                    <div class="box-sort">
-                        <select>
-                            <option disabled selected value="default">Sắp xếp</option>
-                            <option value="new">Mới nhất</option>
-                            <option value="0">Giá thấp nhất</option>
-                            <option value="1">Giá cao nhất</option>
-                        </select>
-                    </div>
-                    <div class="product-grid">
-                        <Card v-for="(card, index) in 12" :key="index" />
-                    </div>
-                </div>
-            </div>
+            <router-view />
             <div class="product-paginate">
-                <paginate :page-count="20" :page-range="2" :margin-pages="2" :click-handler="clickCallback"
+                <paginate :page-count="1" :page-range="2" :margin-pages="2" :click-handler="clickCallback"
                     :prev-text="'Trước'" :next-text="'Sau'" :container-class="'pagination'" :page-class="'page-item'">
                 </paginate>
             </div>
@@ -77,33 +46,45 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
+import { useRoute } from 'vue-router';
+const route = useRoute()
 const modules = [Pagination]
 const categories = [
     {
         id: 1,
-        name: "Phụ kiện",
-        icon: audioIcon
+        name: "Di động",
+        icon: mobileIcon,
+        path: "dien-thoai",
+        value: 'mobile'
     },
     {
         id: 2,
-        name: "Di động",
-        icon: mobileIcon
+        name: "Máy tính",
+        icon: monitorIcon,
+        path: "may-tinh-xach-tay",
+        value: 'laptop'
     },
     {
         id: 3,
-        name: "Màn hình",
-        icon: monitorIcon
+        name: "Đồng hồ",
+        icon: watchIcon,
+        path: "dong-ho",
+        value: 'watch'
     },
     {
         id: 4,
-        name: "Máy tính bảng",
-        icon: tabletIcon
+        name: "Phụ kiện",
+        icon: audioIcon,
+        path: "phu-kien",
+        value: 'accessories'
     },
+
     {
         id: 5,
-        name: "Đồng hồ",
-        icon: watchIcon
+        name: "Máy tính bảng",
+        icon: tabletIcon,
+        path: "may-tinh-bang",
+        value: 'tablet'
     }
 ]
 const clickCallback = (pageNum) => {
@@ -117,9 +98,14 @@ const clickCallback = (pageNum) => {
     flex-direction: column;
     gap: 42px;
     background-color: $light-primary;
-    padding: 20px;
+    padding: 20px 0;
     border-radius: 8px;
     margin-bottom: 40px;
+
+    @include min-sm {
+        padding: 20px;
+
+    }
 
     .product-slider {
         width: 100%;
@@ -185,85 +171,6 @@ const clickCallback = (pageNum) => {
         }
     }
 
-    .product-main {
-        display: flex;
-        gap: 20px;
-
-        .product-filter {
-            width: 300px;
-            padding: 16px;
-
-            .filter-heading {
-                padding: 10px 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-
-                .title {
-                    font-size: 18px;
-                    font-weight: 600;
-                }
-
-                .btn {
-                    color: $azure;
-                    font-size: 13px;
-                    font-style: italic;
-                    cursor: pointer;
-
-                    &:hover {
-                        opacity: .7;
-                    }
-                }
-            }
-
-            .filter-options {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-
-                .option-drive {
-                    width: 100%;
-                    height: 2px;
-                    background-color: $border-section;
-                }
-            }
-        }
-
-        .product-list {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-
-            .box-sort {
-                align-self: flex-end;
-
-                select {
-                    padding: 5px 10px;
-                    border: 1px solid $border-section;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    color: $gray;
-
-                    &:focus {
-                        outline: unset;
-                    }
-
-                    option {
-                        border: 1px solid #ccc;
-                        line-height: 20px;
-                    }
-                }
-            }
-
-            .product-grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 24px;
-            }
-        }
-
-    }
 
     .product-similar {}
 
@@ -295,7 +202,7 @@ const clickCallback = (pageNum) => {
 
                 &.disabled {
                     &:hover {
-                        a{
+                        a {
                             background-color: $white;
                             color: $black;
                         }

@@ -4,6 +4,9 @@ const Product = require('../models/productModel');
 const Specification = require('../models/specificationModel');
 const Option = require('../models/optionModel')
 const Attribute = require('../models/attributeModel')
+const { cloudinary } = require('../services/cloudinary')
+const fs = require('fs')
+
 // add Product
 // Font-end xử lý: với mỗi một type sản phẩm sẽ có danh mục các specs khác nhau của sản phẩm đó
 // validate Backend
@@ -16,17 +19,17 @@ const addProduct = async (req, res) => {
             description,
             categoryId,
             specs,
-            options
+            options,
         } = req.body
         if (!name || !brandId || !basePrice || !description || !categoryId) {
             return res.status(400).json({ error: "Không để trống" })
         }
+
         const createdSpecs = [];
         for (const specData of specs) {
             const spec = await Specification.create(specData);
             createdSpecs.push(spec);
         }
-        console.log(options)
         // Tạo tùy chọn
         const option = await Option.create({
             colors: options.colors
@@ -47,9 +50,8 @@ const addProduct = async (req, res) => {
             description,
             category: categoryId,
             specs: createdSpecs.map(spec => spec._id),
-            options: option._id
+            options: option._id,
         })
-        await product.save()
 
         // Thêm sp vào Brand tương ứng
         const brand = await Brand.findOne({ _id: brandId })
@@ -65,11 +67,100 @@ const addProduct = async (req, res) => {
         }
         category.addProduct(product._id);
         await category.save();
+        await product.save()
+
         res.status(200).json({ product })
     } catch (error) {
         res.status(500).json({ error: "Add error" })
     }
 }
+
+const addImageProduct = async (req, res) => {
+    try {
+        const {
+            productId,
+        } = req.body
+        const product = await Product.findOne({ _id: productId })
+        for (const file of req.files) {
+
+            try {
+                // const img = fs.readFileSync('src/uploads/' + file.filename);
+                // const encode_image = img.toString('base64');
+                const uploadResponse = await cloudinary.uploader.upload('src/uploads/' + file.filename, {
+                    upload_preset: 'dshop'
+                });
+
+
+                if (file.fieldname === 'thumb_url') {
+                    const imageUrl = cloudinary.url(uploadResponse.public_id, {
+                        width: 600,
+                        height: 600,
+                        crop: "fill",
+                        fetch_format: "auto"
+                    });
+                    product.thumb_url = {
+                        type: uploadResponse.resource_type,
+                        url: imageUrl
+                    }
+                } else {
+                    const imageUrl = cloudinary.url(uploadResponse.public_id, {
+                        width: 1200,
+                        height: 570,
+                        crop: "fill",
+                        fetch_format: "auto"
+                    });
+                    product.images.push({
+                        type: uploadResponse.resource_type,
+                        url: imageUrl
+                    });
+                }
+            } catch (error) {
+                return res.status(500).json({ error: "Upload error" })
+            }
+        }
+        await product.save()
+
+        res.status(200).json({ product })
+    } catch (error) {
+        res.status(500).json({ error: "Add error" })
+    }
+}
+
+
+// const addImgProductThumb = async (req, res) => {
+//     try {
+//         const {
+//             productId,
+//         } = req.body
+//         const product = await Product.findOne({ _id: productId })
+
+//         for (const file of req.files) {
+//             try {
+//                 const uploadResponse = await cloudinary.uploader.upload('src/uploads/' + file.filename, {
+//                     upload_preset: 'dshop'
+//                 });
+
+//                 const imageUrl = cloudinary.url(uploadResponse.public_id, {
+//                     width: 534,
+//                     height: 298,
+//                     crop: "fill",
+//                     fetch_format: "auto"
+//                 });
+//                 product.images.push({
+//                     type: uploadResponse.resource_type,
+//                     url: imageUrl
+//                 });
+//             } catch (error) {
+//                 return res.status(500).json({ error: "Upload error" })
+//             }
+//         }
+//         await product.save()
+
+//         res.status(200).json({ product })
+//     } catch (error) {
+//         res.status(500).json({ error: "Add error" })
+//     }
+// }
 const listProduct = async (req, res) => {
     try {
         const products = await Product.find({})
@@ -81,8 +172,8 @@ const listProduct = async (req, res) => {
 
 const detailProduct = async (req, res) => {
     try {
-        const { id } = req.params
-        const product = await Product.findOne({ _id: id })
+        const { slug } = req.params
+        const product = await Product.findOne({ slug: slug })
             .populate('brand', 'name')
             .populate('category', 'name')
             .populate('specs', 'key value')
@@ -93,7 +184,6 @@ const detailProduct = async (req, res) => {
                     model: 'Attribute',
                 },
             });
-        console.log(product)
         res.status(200).json({ product })
     } catch (error) {
         res.status(500).json({ error: "error" })
@@ -116,5 +206,6 @@ module.exports = {
     addProduct,
     listProduct,
     deleteProduct,
-    detailProduct
+    detailProduct,
+    addImageProduct
 }

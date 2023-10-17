@@ -1,11 +1,12 @@
 <template>
     <section class="best-seller">
-        <section-heading titleText="Bán chạy" navText="View all" navTo="/product" />
-        <div class="product-list">
+        <section-heading titleText="Bán chạy" navText="View all" navTo="/san-pham/dien-thoai" />
+        <div class="product-list" v-if="products">
             <swiper :modules="modules" :slides-per-view="3" :navigation="true" :space-between="24" id="swiper-slider"
                 :breakpoints="breakpoints">
-                <swiper-slide class="swiper-item" v-for="n in 12" :key="n">
-                    <Card />
+                <swiper-slide class="swiper-item" v-for="product in products" :key="product._id">
+                    <Card :product="product"/>
+                    {{ console.log(product) }}
                 </swiper-slide>
             </swiper>
         </div>
@@ -18,6 +19,10 @@ import 'swiper/css';
 import SectionHeading from '@/view/components/SectionHeading.vue';
 import Card from '@/view/components/Card.vue';
 import { Navigation } from 'swiper/modules';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
+import { ProductsAxiosService } from '@/services/remote/product';
+
 const breakpoints = {
     320: { slidesPerView: 2, spaceBetween: 10 },
     768: { slidesPerView: 2, spaceBetween: 16 },
@@ -25,6 +30,17 @@ const breakpoints = {
     1224: { slidesPerView: 5, spaceBetween: 20 },
 }
 const modules = [Navigation]
+const products = ref(null)
+onMounted(async () => {
+    await ProductsAxiosService.fetchAll({ page: 1, page_size: 12 })
+        .then(res => {
+            products.value = res.data.products
+            console.log(res.data)
+        })
+        .catch(error => {
+            console.log("lỗi")
+        });
+});
 </script>
 
 <style lang="scss">
@@ -33,7 +49,8 @@ const modules = [Navigation]
     flex-direction: column;
     gap: 16px;
     background-color: $light-primary;
-    border-radius: 8px ;
+    border-radius: 8px;
+
     .product-list {
         width: 100%;
         padding: 10px;
@@ -42,9 +59,11 @@ const modules = [Navigation]
 
     #swiper-slider {
         background-color: $light-primary;
+
         .swiper-button-prev,
         .swiper-button-next {
             z-index: 1;
+
             &::after {
                 background-color: $light-primary;
                 font-size: 16px;
@@ -59,7 +78,8 @@ const modules = [Navigation]
                 }
 
             }
-            &.swiper-button-disabled{
+
+            &.swiper-button-disabled {
                 display: none;
             }
         }

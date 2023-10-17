@@ -1,6 +1,6 @@
 <template>
     <section class="news">
-        <section-heading titleText="Tin tức" navText="View all" navTo="/products" />
+        <section-heading titleText="Tin tức" navText="View all" navTo="/san-pham/dien-thoai" />
         <div class="news-main">
             <div class="card" v-for="n in 3" :key="n">
                 <div class="card-img">

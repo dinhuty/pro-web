@@ -1,6 +1,6 @@
 <template>
     <section class="brands">
-        <section-heading titleText="Thương hiệu nổi tiếng" navText="View all" navTo="/products" />
+        <section-heading titleText="Thương hiệu nổi tiếng" navText="View all" navTo="/san-pham/dien-thoai" />
         <div class="box-brands">
             <div class="brands-item" v-for="brand in brands" :key="brand.name">
                 <img :src="brand.img" alt="">
