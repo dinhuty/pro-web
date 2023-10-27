@@ -30,9 +30,7 @@ const { titleText, navText, navTo, icon } = defineProps({
 })
 let anim = ref()
 
-onMounted(() => {
-    console.log(typeof icon)
-})
+
 </script>
 <style lang="scss">
 .section-heading {

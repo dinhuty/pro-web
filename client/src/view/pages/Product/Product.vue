@@ -20,6 +20,9 @@
                     <span class="title">
                         {{ category.name }}
                     </span>
+                    <div :class="route.path.includes(category.path) ? 'active' : 'non-active'">
+
+                    </div>
                 </router-link>
             </div>
             <router-view />
@@ -132,14 +135,15 @@ const clickCallback = (pageNum) => {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 16px;
+            gap: 5px;
             padding: 5px;
             cursor: pointer;
 
             .icon {
-                height: 25px;
-                width: 25px;
+                height: 22px;
+                width: 22px;
                 overflow: hidden;
+                margin-bottom: 10px;
 
                 img {
                     height: 100%;
@@ -158,19 +162,38 @@ const clickCallback = (pageNum) => {
 
             }
 
-            &.active {
-                border-bottom: 2px solid var(--Primary, #0C68F4);
+            .active {
+                height: 1px;
+                width: 100%;
+                background-color: $azure;
+            }
+
+            .non-active {
+                align-self: start;
+                width: 0;
+                height: 1px;
+                background-color: $azure;
+                transition: all .3s cubic-bezier(0.075, 0.82, 0.165, 1);
             }
 
             &:hover {
-
-                img {
-                    transform: scale(1.1);
+                .non-active {
+                    width: 100%;
                 }
             }
+
         }
     }
 
+    @keyframes borderAnimation {
+        0% {
+            border-bottom: 0;
+        }
+
+        100% {
+            border-bottom: 100px solid blue;
+        }
+    }
 
     .product-similar {}
 

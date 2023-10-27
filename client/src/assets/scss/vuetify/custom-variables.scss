@@ -1,0 +1,20 @@
+$input-control-height: 64px;
+$input-details-font-size: 3rem;
+$input-details-font-weight: 500;
+
+.last-name {
+    .v-text-field {
+        &.v-text-field--solo {
+            .v-input {
+                .v-input__control {
+                    height: $input-control-height;
+                }
+
+                .v-messages {
+                    font-size: $input-details-font-size;
+                    font-weight: $input-details-font-weight;
+                }
+            }
+        }
+    }
+}

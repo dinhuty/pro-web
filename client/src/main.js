@@ -7,22 +7,25 @@ import store from './store/store'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-    faUserSecret, 
+    faUserSecret,
     faAngleRight,
     faCalendar,
-    faAngleLeft, 
+    faAngleLeft,
     faHeadset,
     faCartPlus,
     faClock,
     faStar,
     faMobile,
-    faLaptop
+    faLaptop,
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
     faUser,
 
 } from '@fortawesome/free-regular-svg-icons'
+import { CartService } from './services/local/cart'
+//vuetify
+import vuetify from './plugins/vuetify'
 
 library.add(faUserSecret,
     faAngleRight,
@@ -34,11 +37,13 @@ library.add(faUserSecret,
     faClock,
     faStar,
     faMobile,
-    faLaptop
+    faLaptop,
 )
-
+const cart = CartService.getCart()
+store.commit('cart/INITIAL_CART', cart)
 createApp(App)
     .use(router)
     .use(store)
+    .use(vuetify)
     .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app');

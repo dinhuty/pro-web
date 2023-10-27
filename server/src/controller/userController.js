@@ -43,8 +43,7 @@ const signin = async (req, res, next) => {
         // mailer(email, `<h1>Hi ${user.name}! Ban vua dang nhap he thong</h1>`)
         res.status(200).json({ user: updateUser, token })
     } catch (error) {
-        console.log(error)
-        res.status(500).json({ status: "Error" })
+        res.status(500).json({ error: error.message })
     }
 }
 // GET /user/me

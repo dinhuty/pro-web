@@ -2,8 +2,8 @@
     <div class="app-home">
         <Container class="home-container">
             <div class="home-slider">
-                <swiper :modules="modules" :slides-per-view="1" :space-between="10" @swiper="onSwiper"
-                    @slideChange="onSlideChange" :pagination="{ clickable: true }" :navigation="true" id="swiper-slider">
+                <swiper :modules="modules" :slides-per-view="1" :space-between="10"
+                 :pagination="{ clickable: true }" :navigation="true" id="swiper-slider">
                     <swiper-slide class="swiper-item" v-for="n in 6" :key="n">
                         <img :src="require('@/assets/images/banner.jpg')" alt="">
                     </swiper-slide>
@@ -47,12 +47,6 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-cube'
 
-const onSwiper = (swiper) => {
-    console.log(swiper);
-};
-const onSlideChange = () => {
-    console.log('slide change');
-};
 const modules = [Navigation, Pagination, Autoplay, EffectCube]
 </script>
 <style lang="scss">

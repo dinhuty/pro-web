@@ -3,16 +3,6 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
 const userSchema = mongoose.Schema({
-    firstName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    lastName: {
-        type: String,
-        required: true,
-        trim: true
-    },
     email: {
         type: String,
         required: true,
@@ -25,10 +15,6 @@ const userSchema = mongoose.Schema({
     avatarURL: {
         type: String,
         default: '',
-    },
-    address: {
-        type: String,
-        required: true,
     },
     blockedUsers: [
         {

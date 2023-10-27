@@ -6,7 +6,6 @@
                 :breakpoints="breakpoints">
                 <swiper-slide class="swiper-item" v-for="product in products" :key="product._id">
                     <Card :product="product"/>
-                    {{ console.log(product) }}
                 </swiper-slide>
             </swiper>
         </div>
@@ -35,7 +34,6 @@ onMounted(async () => {
     await ProductsAxiosService.fetchAll({ page: 1, page_size: 12 })
         .then(res => {
             products.value = res.data.products
-            console.log(res.data)
         })
         .catch(error => {
             console.log("lỗi")

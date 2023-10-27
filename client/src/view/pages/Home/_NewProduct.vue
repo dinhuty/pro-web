@@ -27,7 +27,6 @@ onMounted(async () => {
     await ProductsAxiosService.fetchAll({ page: 1, page_size: 12 })
         .then(res => {
             products.value = res.data.products
-            console.log(res.data)
         })
         .catch(error => {
             console.log("lỗi")

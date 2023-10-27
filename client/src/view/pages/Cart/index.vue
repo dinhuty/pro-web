@@ -2,9 +2,9 @@
   <Container>
     <div class="app-cart">
       <div class="app-navigate">
-        Home > Cart
+        <breadscrumb :data="[{ path: '', name: 'Trang chủ', value: 'home' }]" />
       </div>
-      <div class="cart-stepper">
+      <!-- <div class="cart-stepper">
         <div class="cart-icon">
           <img :src="require('@/assets/svg/cart.svg')" alt="">
           <span>Giỏ hàng</span>
@@ -17,26 +17,43 @@
           <img :src="require('@/assets/svg/payment.svg')" alt="">
           <span>Thanh toán</span>
         </div>
-      </div>
+      </div> -->
       <div class="cart-main">
-        <div class="product-list">
-          <div class="card-product" v-for="n in 3" :key="n">
+        <div class="product-list" v-if="listProduct.length > 0">
+          <div
+            class="card-product"
+            v-for="(item, index) in listProduct"
+            :key="index"
+          >
             <div class="card-image">
-              <img src="https://ourdeal.co.uk/wp-content/uploads/2022/02/macprofrontside1.jpg" alt="">
+              <img :src="item.product.thumb_url.url" alt="" />
             </div>
             <div class="card-desc">
               <h3 class="title">
-                MacBook Pro M2 MNEJ3 2022 LLA
-                13.3 inch
+                {{ item.product.name }}
               </h3>
               <div class="card-info">
                 <ul>
-                  <li v-for="n in 3" :key="n">
+                  <li class="card-info__color">
+                    <div class="icon" :style="{ 'font-size': '13px' }">
+                      Màu sắc:
+                    </div>
+                    <div
+                      class="text"
+                      :style="{
+                        'background-color': item.option.color.value,
+                        height: '16px',
+                        width: '16px',
+                        'border-radius': '50%',
+                      }"
+                    ></div>
+                  </li>
+                  <li>
                     <div class="icon">
-
+                      <font-awesome-icon icon="mobile" />
                     </div>
                     <div class="text">
-                      Black
+                      {{ item.option.attribute.value }}
                     </div>
                   </li>
                 </ul>
@@ -44,66 +61,60 @@
               <div class="card-price">
                 <div class="price">
                   <span>Giá:</span>
-                  <span>1.200.000VND</span>
+                  <span>{{
+                    formatCurrency(item.option.attribute.price * item.quantity)
+                  }}</span>
                 </div>
                 <div class="box-quatity">
-                  <button class="btn-reduce">
-                    <img :src="minusIcon" alt="">
+                  <button
+                    class="btn-reduce"
+                    @click="updateProductQuantity(item.id, 'minus')"
+                  >
+                    <img :src="minusIcon" alt="" />
                   </button>
                   <span class="quantity">
-                    3
+                    {{ item.quantity }}
                   </span>
-                  <button class="btn-incre">
-                    <img :src="plusIcon" alt="">
+                  <button
+                    class="btn-incre"
+                    @click="updateProductQuantity(item.id, 'plus')"
+                  >
+                    <img :src="plusIcon" alt="" />
                   </button>
-
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="product-list" v-else>Không có sản phẩm nào</div>
         <div class="payment-detail">
-          <h3 class="title">
-            Thanh toán
-          </h3>
+          <h3 class="title">Thanh toán</h3>
           <div class="payment-box">
             <div class="payment-top">
               <div class="payment-subtotal">
-                <span class="left">
-                  Tổng tiền sản phẩm
-                </span>
+                <span class="left"> Tổng tiền sản phẩm </span>
                 <span class="right">
-                  200.000VND
+                  {{ formatCurrency(totalPrice) }}
                 </span>
               </div>
               <div class="payment-discount">
-                <span class="left">
-                  Giảm giá (10%)
-                </span>
-                <span class="right">
-                  20.000VND
-                </span>
+                <span class="left"> Giảm giá (0%) </span>
+                <span class="right"> 0đ </span>
               </div>
               <div class="payment-ship">
-                <span class="left">
-                  Phí vận chuyển
-                </span>
-                <span class="right">
-                  16.500VND
-                </span>
+                <span class="left"> Phí vận chuyển </span>
+                <span class="right"> 0đ </span>
               </div>
             </div>
             <div class="payment-bottom">
-              <div class="left">
-                Tổng thanh toán
-              </div>
+              <div class="left">Tổng thanh toán</div>
               <div class="right">
-                196.000VND
+                {{ formatCurrency(totalPrice) }}
               </div>
             </div>
           </div>
           <div class="payment-btn">
-            <button> Tới trang thanh toán</button>
+            <button>Tới trang thanh toán</button>
           </div>
         </div>
       </div>
@@ -113,24 +124,37 @@
 
 <script setup>
 import Container from "../../common/Container.vue";
-import minusIcon from '@/assets/svg/minus.svg'
-import plusIcon from '@/assets/svg/plus.svg'
+import minusIcon from "@/assets/svg/minus.svg";
+import plusIcon from "@/assets/svg/plus.svg";
+import { useStore } from "vuex";
+import { computed, onMounted, watchEffect } from "vue";
+import { formatCurrency } from "@/utils/formatCurrency";
+import { CartAction } from "@/store/modules/cart/types.actions";
+import { useRouter } from "vue-router";
+import Breadscrumb from "@/view/components/Breadscrumb.vue";
+
+const router = useRouter();
+const store = useStore();
+const totalPrice = computed(() => {
+  return store.getters["cart/totalPrice"];
+});
+const listProduct = computed(() => {
+  return store.getters["cart/cartItems"];
+});
+const updateProductQuantity = (id, type) => {
+  store.dispatch(`cart/${CartAction.UPDATE_CART_ITEM_QUANTITY}`, { id, type });
+};
 </script>
 
 <style lang="scss" scoped>
 .app-cart {
-  padding: 10px 20px;
+  padding: 20px 20px;
   background-color: $white;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
   border-radius: 8px;
   margin-bottom: 20px;
-
-  .app-navigate {
-    font-style: italic;
-    color: $azure;
-  }
 
   .cart-stepper {
     width: 100%;
@@ -173,7 +197,7 @@ import plusIcon from '@/assets/svg/plus.svg'
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding: 32px;
+    padding: 16px 32px;
 
     @include min-lg {
       flex-direction: row;
@@ -183,19 +207,18 @@ import plusIcon from '@/assets/svg/plus.svg'
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      padding-top: 32px;
+      gap: 16px;
 
       .card-product {
         display: flex;
         gap: 24px;
-        border: 2px solid $border-section;
+        border: 1px solid $border-section;
         border-radius: 8px;
-        padding: 20px;
+        padding: 10px;
 
         .card-image {
-          height: 120px;
-          width: 120px;
+          height: 100px;
+          width: 100px;
           align-self: center;
 
           img {
@@ -208,12 +231,12 @@ import plusIcon from '@/assets/svg/plus.svg'
         .card-desc {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 8px;
           width: 100%;
 
           .title {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
           }
 
@@ -222,24 +245,20 @@ import plusIcon from '@/assets/svg/plus.svg'
               display: flex;
               flex-direction: column;
               gap: 8px;
+              color: $gray;
+              font-weight: 400;
 
               li {
                 display: flex;
                 gap: 5px;
                 font-size: 12px;
                 align-items: center;
-                color: $gray;
 
                 .icon {
-                  height: 16px;
-                  width: 16px;
-                  background-color: $green;
-                  border-radius: 50%;
-
+                  font-size: 12px;
                 }
               }
             }
-
           }
 
           .card-price {
@@ -251,7 +270,7 @@ import plusIcon from '@/assets/svg/plus.svg'
               gap: 5px;
 
               span {
-                font-weight: 600;
+                font-weight: 500;
 
                 &:last-child {
                   color: $red;
@@ -264,7 +283,9 @@ import plusIcon from '@/assets/svg/plus.svg'
               gap: 10px;
               justify-items: center;
               align-items: center;
-              font-weight: 600;
+              font-weight: 400;
+              font-size: 13px;
+
               button {
                 align-items: center;
                 background-color: #f9f9f9;
@@ -274,11 +295,11 @@ import plusIcon from '@/assets/svg/plus.svg'
                 justify-content: center;
                 align-items: center;
                 padding: 5px;
-                font-size: 16px;
                 border-radius: 4px;
-                img{
-                  width: 25px;
-                  height: 25px;
+
+                img {
+                  width: 20px;
+                  height: 20px;
                 }
               }
             }
@@ -288,13 +309,15 @@ import plusIcon from '@/assets/svg/plus.svg'
     }
 
     .payment-detail {
-      width: 400px;
+      width: 450px;
       display: flex;
       flex-direction: column;
       gap: 24px;
-      padding-top: 40px;
+      padding-top: 10px;
 
-
+      @include min-lg {
+        width: 380px;
+      }
       .title {
         font-size: 18px;
         font-weight: 600;
@@ -312,7 +335,7 @@ import plusIcon from '@/assets/svg/plus.svg'
           padding-bottom: 16px;
           border-bottom: 1px solid $border-section;
 
-          &>div {
+          & > div {
             display: flex;
             justify-content: space-between;
             color: $gray;
@@ -324,10 +347,8 @@ import plusIcon from '@/assets/svg/plus.svg'
 
             .right {
               font-weight: 400;
-
             }
           }
-
         }
 
         .payment-bottom {
@@ -345,32 +366,28 @@ import plusIcon from '@/assets/svg/plus.svg'
             color: $red;
           }
         }
-
-
       }
 
       .payment-btn {
-
         button {
           width: 100%;
           height: 100%;
           border: unset;
           padding: 15px;
           border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
+          font-size: 15px;
+          font-weight: 500;
           color: $white;
           background-color: $red;
           cursor: pointer;
-          font-family: 'Inter';
+          font-family: "Inter";
 
           &:hover {
-            opacity: .8;
+            opacity: 0.8;
           }
         }
       }
     }
-
   }
 }
 </style>

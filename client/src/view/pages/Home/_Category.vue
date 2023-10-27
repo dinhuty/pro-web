@@ -21,7 +21,6 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import categories from '@/utils/category';
 
-console.log(categories)
 
 const breakpoints = {
     375: { slidesPerView: 4.5, spaceBetween: 10 },
